@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
+
 <link rel="import" href="../yggops-socketio/yggops-socketio.html">
 <link rel="import" href="../yggops-graph/yggops-graph.html">
 <link rel="import" href="../yggops-chat/yggops-chat.html">
@@ -12,28 +13,67 @@
   }
   </style>
   <h2>Hello [[prop1]]!</h2>
-  <yggops-socketio></yggops-socketio>
-    <yggops-graph></yggops-graph>
-      <yggops-chat></yggops-chat>
-      </template>
+  <div hidden$="[[connected]]">[[status]]</div>
+  <yggops-socketio socket="{{socket}}" status="{{status}}"></yggops-socketio>
+  <yggops-graph socket="[[socket]]" actionstosend="{{actionstosend}}" status="[[status]]"></yggops-graph>
+  <yggops-chat socket="[[socket]]"></yggops-chat>
+</template>
 
-      <script>
-      /**
-      * @customElement
-      * @polymer
-      */
-      class YggopsApp extends Polymer.Element {
-        static get is() { return 'yggops-app'; }
-        static get properties() {
-          return {
-            prop1: {
-              type: String,
-              value: 'yggops-app'
-            }
-          };
-        }
-      }
+<script>
+/**
+* @customElement
+* @polymer
+*/
+class YggopsApp extends Polymer.Element {
+  static get is() { return 'yggops-app'; }
+  static get properties() {
+    return {
+      prop1: {
+        type: String,
+        value: 'yggops-app'
+      },
+      socket: {
+        type: Object
+      },
+      actionstosend: {
+        type: Array,
+        value:[]
+      },
+      connected:{
+        type: Boolean,
+      },
+      status:{
+        type: String,
+        observer: '_consoleStatus'
+      },
+    };
+  }
 
-      window.customElements.define(YggopsApp.is, YggopsApp);
-      </script>
-    </dom-module>
+  ready() {
+    super.ready();
+    var app=this;
+    /*
+    var tickInterval = setInterval(function() {
+    if (app.connected){
+    //  console.log("tick spog-app");
+    if (app.actionstosend.length > 0) {
+    console.log(app.actionstosend);
+    app.socket.emit('newActions', app.actionstosend);
+    app.actionstosend = [];
+  }}
+}, this.tickDelay);*/
+}
+
+_consoleStatus(newValue, oldValue){
+  console.log(oldValue +" -> "+ newValue);
+  if(newValue =="connected"){
+    this.connected = true;
+  }else{
+    this.connected = false;
+  }
+}
+}
+
+window.customElements.define(YggopsApp.is, YggopsApp);
+</script>
+</dom-module>

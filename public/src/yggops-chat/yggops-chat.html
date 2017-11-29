@@ -2,35 +2,111 @@
 
 <dom-module id="yggops-chat">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+  <style>
+  :host {
+    display: block;
+  }
+  </style>
+  <h2>Hello [[prop1]]!</h2>
+</template>
 
-  <script>
-    /**
-     * `yggops-chat`
-     *
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class YggopsChat extends Polymer.Element {
-      static get is() { return 'yggops-chat'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'yggops-chat'
-          }
-        };
-      }
+<script>
+/**
+* `yggops-chat`
+*
+*
+* @customElement
+* @polymer
+* @demo demo/index.html
+*/
+class YggopsChat extends Polymer.Element {
+  static get is() { return 'yggops-chat'; }
+  static get properties() {
+    return {
+      prop1: {
+        type: String,
+        value: 'yggops-chat'
+      },
+      socket: {
+        type: Object,
+        observer: "_socketChanged"
+      },
+    };
+  }
+
+  _socketChanged(s){
+    //  console.log(s);
+    var app = this;
+    var app = this;
+    this.socket.on('tick', function(data){
+      console.log(data);
+    });
+    
+    this.socket.on('login', function (data) {
+      app.log({username: "Spog", message:"Bonjour, je m'appelle Spog."});
+      app.log({username: "Spog", message:"Sur cette page, tu peux chatter avec les autres utilisateurs connectes."});
+      app.log({username: "Spog", message:"En cliquant sur le chat, en haut à droite, tu bascules sur le graphe."});
+      app.addParticipantsMessage(data);
+    });
+
+    this.socket.on('new message', function (data) {
+      app.addChatMessage(data);
+    });
+
+    // Whenever the server emits 'user joined', log it in the chat body
+    this.socket.on('user joined', function (data) {
+      app.log({username:"spog-system", message:data.username + ' joined'});
+      app.addParticipantsMessage(data);
+    });
+
+    // Whenever the server emits 'user left', log it in the chat body
+    this.socket.on('user left', function (data) {
+      app.log({username: "spog-system", message:data.username + ' left'});
+      app.addParticipantsMessage(data);
+      //  app.removeChatTyping(data);
+    });
+
+    // listener, whenever the server emits 'updatechat', this updates the chat body
+    this.socket.on('updatechat', function (username, data) {
+      app.$.conversation.append(username + ': ' + data);
+    });
+
+    // listener, whenever the server emits 'updaterooms', this updates the room the client is in
+    this.socket.on('updaterooms', function(rooms, current_room) {
+      console.log(rooms);
+      console.log(current_room);
+      //app.$.rooms.innerHTML=null;
+      app.rooms = [];
+      //  app.current_room=current_room;
+      /*$.each(rooms, function(key, value) {
+      if(value == current_room){
+      app.$.rooms.append('<div>' + value + '</div>');
     }
+    else {
+    app.$.rooms.append('<div><a href="#" onclick="switchRoom(\''+value+'\')">' + value + '</a></div>');
+  }
+});*/
 
-    window.customElements.define(YggopsChat.is, YggopsChat);
-  </script>
+Object.keys(rooms).forEach(function (key) {
+  // do something with obj[key]
+  console.log(key +"->"+rooms[key]);
+  var room = {};
+  room.id = key;
+  room.name = rooms[key];
+
+  if(rooms[key] == current_room){
+    room.current = true;
+  } else{
+    room.current = false;
+  }
+  console.log(room);
+  app.push('rooms', room);
+});
+});
+}
+
+}
+
+window.customElements.define(YggopsChat.is, YggopsChat);
+</script>
 </dom-module>
