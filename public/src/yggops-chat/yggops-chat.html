@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="yggops-chat">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `yggops-chat`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class YggopsChat extends Polymer.Element {
+      static get is() { return 'yggops-chat'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'yggops-chat'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(YggopsChat.is, YggopsChat);
+  </script>
+</dom-module>

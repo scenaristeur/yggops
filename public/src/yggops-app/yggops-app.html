@@ -1,35 +1,39 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 <link rel="import" href="../yggops-socketio/yggops-socketio.html">
+<link rel="import" href="../yggops-graph/yggops-graph.html">
+<link rel="import" href="../yggops-chat/yggops-chat.html">
 
 <dom-module id="yggops-app">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-    <yggops-socketio></iggops-socketio>
-  </template>
+  <style>
+  :host {
+    display: block;
+  }
+  </style>
+  <h2>Hello [[prop1]]!</h2>
+  <yggops-socketio></yggops-socketio>
+    <yggops-graph></yggops-graph>
+      <yggops-chat></yggops-chat>
+      </template>
 
-  <script>
-    /**
-     * @customElement
-     * @polymer
-     */
-    class YggopsApp extends Polymer.Element {
-      static get is() { return 'yggops-app'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'yggops-app'
-          }
-        };
+      <script>
+      /**
+      * @customElement
+      * @polymer
+      */
+      class YggopsApp extends Polymer.Element {
+        static get is() { return 'yggops-app'; }
+        static get properties() {
+          return {
+            prop1: {
+              type: String,
+              value: 'yggops-app'
+            }
+          };
+        }
       }
-    }
 
-    window.customElements.define(YggopsApp.is, YggopsApp);
-  </script>
-</dom-module>
+      window.customElements.define(YggopsApp.is, YggopsApp);
+      </script>
+    </dom-module>
